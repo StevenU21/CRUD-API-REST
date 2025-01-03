@@ -57,12 +57,12 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        $product->update($request->validated());
-
+        $product->fill($request->validated());
+        $product->save();
 
         if ($request->hasFile('image')) {
             if ($product->image) {
-                Storage::disk('public')->delete($product->image); // Corrección aquí
+                Storage::disk('public')->delete($product->image);
             }
 
             $file = $request->file('image');
