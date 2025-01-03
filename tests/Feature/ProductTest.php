@@ -31,7 +31,7 @@ class ProductTest extends TestCase
         ]);
 
         // Verifica que la URL de la imagen sea correcta
-        $this->assertEquals(asset('storage/products/product.jpg'), $product->image());
+        $this->assertEquals(asset('storage/products_images/product.jpg'), $product->image());
     }
 
     /**
@@ -126,30 +126,6 @@ class ProductTest extends TestCase
         ]);
     }
 
-    public function test_index_includes_slug()
-    {
-        // Crear algunos productos para probar
-        Product::factory()->count(10)->create();
-
-        // Hacer una solicitud GET a la ruta de índice de productos
-        $response = $this->getJson('/api/products?include_slug=1');
-
-        // Verificar que la respuesta tenga la estructura correcta
-        $response->assertJsonStructure([
-            'data' => [
-                '*' => [
-                    'slug',
-                    'name',
-                    'description',
-                    'price',
-                    'stock',
-                ]
-            ],
-            'links',
-            'meta'
-        ]);
-    }
-
     public function test_index_includes_timestamps()
     {
         // Crear algunos productos para probar
@@ -227,7 +203,6 @@ class ProductTest extends TestCase
             'description' => $productData['description'],
             'price' => $productData['price'],
             'stock' => $productData['stock'],
-            'slug' => Str::slug($productData['name'], '-'),
         ]);
 
         // Verificar que la imagen se haya almacenado
@@ -265,5 +240,100 @@ class ProductTest extends TestCase
                 'stock',
             ]
         ]);
+    }
+
+    public function test_update_product_name()
+    {
+        // Crear un producto existente
+        $product = Product::factory()->create([
+            'name' => 'Old Name',
+        ]);
+
+        // Crear datos de actualización
+        $updateData = [
+            'name' => 'New Name',
+            'description' => 'Updated Description',
+            'price' => 200,
+            'stock' => 20,
+        ];
+
+        // Hacer una solicitud PATCH a la ruta de actualización de productos
+        $response = $this->patchJson("/api/products/{$product->id}", $updateData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+
+        // Verificar que el producto se haya actualizado en la base de datos
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'name' => 'New Name',
+            'description' => 'Updated Description',
+            'price' => 200,
+            'stock' => 20,
+        ]);
+    }
+
+    public function test_update_product_with_image()
+    {
+        // Simular el almacenamiento de archivos
+        Storage::fake('public');
+
+        // Crear un producto existente
+        $product = Product::factory()->create([
+            'name' => 'Old Name',
+            'image' => 'products_images/old-image.png',
+        ]);
+
+        // Crear datos de actualización
+        $updateData = [
+            'name' => 'New Name',
+            'description' => 'Updated Description',
+            'price' => 200,
+            'stock' => 20,
+            'image' => UploadedFile::fake()->image('new-product.jpg'),
+        ];
+
+        // Hacer una solicitud PATCH a la ruta de actualización de productos
+        $response = $this->patchJson("/api/products/{$product->id}", $updateData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+
+        // Verificar que el producto se haya actualizado en la base de datos
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'name' => 'New Name',
+            'description' => 'Updated Description',
+            'price' => 200,
+            'stock' => 20,
+        ]);
+
+        // Verificar que la nueva imagen se haya almacenado y la antigua se haya eliminado
+        Storage::disk('public')->assertExists('products_images/new-name-' . $product->id . '.png');
+        Storage::disk('public')->assertMissing('products_images/old-image.png');
+    }
+
+    public function test_update_product_without_image()
+    {
+        // Crear un producto existente
+        $product = Product::factory()->create([
+            'name' => 'Old Name',
+            'image' => 'products_images/old-image.png',
+        ]);
+
+        // Crear datos de actualización sin imagen
+        $updateData = [
+            'name' => 'New Name',
+            'description' => 'Updated Description',
+            'price' => 200,
+            'stock' => 20,
+            'image' => null,
+        ];
+
+        // Hacer una solicitud PATCH a la ruta de actualización de productos
+        $response = $this->patchJson("/api/products/{$product->id}", $updateData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
     }
 }

@@ -19,7 +19,6 @@ class Product extends Model
         'price',
         'stock',
         'image',
-        'slug',
     ];
 
     /**
@@ -31,18 +30,13 @@ class Product extends Model
         'stock' => 'integer',
     ];
 
-    // public function getRouteKeyName(): string
-    // {
-    //     return 'slug';
-    // }
-
     /**
      *  Obtiene la URL de la imagen del producto.
      */
     public function image(): string
     {
         if ($this->image) {
-            return asset('storage/products/' . $this->image);
+            return asset('storage/products_images/' . $this->image);
         } else {
             return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwm0rdbOAslibv0mLIxWKZ6C6r9m8fujTIBA&s';
         }

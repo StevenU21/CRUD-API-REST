@@ -92,7 +92,6 @@ La API estará disponible en `http://localhost:8000`.
 - **GET** `/api/products` - Listar todos los productos con paginación
   - Parámetros opcionales:
     - `include_id=true` - Incluir el ID del producto en la respuesta
-    - `include_slug=true` - Incluir el Slug del producto en la respuesta
     - `include_timestamps=true` - Incluir las marcas de tiempo en la respuesta
     - `per_page=10` - Número de productos por página (por defecto es 10)
     - `page=1` - Número de la página a obtener (por defecto es 1)
