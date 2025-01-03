@@ -18,7 +18,8 @@ Este proyecto es una implementación sencilla de una API RESTful para operacione
 ├── app
 │   ├── Http
 │   │   ├── Controllers
-│   │   └── Requests
+│   │   |── Requests
+|   |   |── Resources
 │   ├── Models
 │   └── ...
 ├── config
