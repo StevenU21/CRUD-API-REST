@@ -31,10 +31,10 @@ class Product extends Model
         'stock' => 'integer',
     ];
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
+    // public function getRouteKeyName(): string
+    // {
+    //     return 'slug';
+    // }
 
     /**
      *  Obtiene la URL de la imagen del producto.

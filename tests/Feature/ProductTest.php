@@ -173,5 +173,33 @@ class ProductTest extends TestCase
         ]);
     }
 
+    public function test_show_returns_single_product()
+    {
+        // Crear un producto para probar
+        $product = Product::factory()->create();
 
+        // Hacer una solicitud GET a la ruta de un solo producto
+        $response = $this->getJson("/api/products/{$product->id}");
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $response->assertJsonStructure([
+            'data' => [
+                'name',
+                'description',
+                'price',
+                'stock',
+            ]
+        ]);
+
+        // Verificar que la respuesta tenga los datos correctos
+        $response->assertJsonFragment([
+            'name' => $product->name,
+            'description' => $product->description,
+            'price' => $product->price,
+            'stock' => $product->stock,
+        ]);
+    }
 }
