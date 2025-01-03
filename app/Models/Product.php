@@ -19,6 +19,7 @@ class Product extends Model
         'price',
         'stock',
         'image',
+        'slug',
     ];
 
     /**
@@ -29,6 +30,11 @@ class Product extends Model
         'price' => 'decimal:2',
         'stock' => 'integer',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     /**
      *  Obtiene la URL de la imagen del producto.

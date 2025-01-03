@@ -20,6 +20,7 @@ class ProductModelTest extends TestCase
             'price',
             'stock',
             'image',
+            'slug',
         ], $product->getFillable());
     }
 
