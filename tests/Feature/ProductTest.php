@@ -48,5 +48,104 @@ class ProductTest extends TestCase
         $this->assertEquals('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwm0rdbOAslibv0mLIxWKZ6C6r9m8fujTIBA&s', $product->image());
     }
 
-    
+    public function test_index_returns_paginated_products()
+    {
+        // Crear algunos productos para probar
+        Product::factory()->count(30)->create();
+
+        // Hacer una solicitud GET a la ruta de índice de productos
+        $response = $this->getJson('/api/products?per_page=10');
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(200);
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'name',
+                    'description',
+                    'price',
+                    'stock',
+                ]
+            ],
+            'links',
+            'meta'
+        ]);
+
+        // Verificar que se devuelvan 10 productos por página
+        $this->assertCount(10, $response->json('data'));
+    }
+
+    public function test_index_returns_paginated_products_with_default_per_page()
+    {
+        // Crear algunos productos para probar
+        Product::factory()->count(30)->create();
+
+        // Hacer una solicitud GET a la ruta de índice de productos
+        $response = $this->getJson('/api/products');
+
+        // Verificar que se devuelvan 10 productos por página
+        $this->assertCount(10, $response->json('data'));
+    }
+
+    public function test_index_returns_paginated_products_with_custom_per_page()
+    {
+        // Crear algunos productos para probar
+        Product::factory()->count(30)->create();
+
+        // Hacer una solicitud GET a la ruta de índice de productos
+        $response = $this->getJson('/api/products?per_page=5');
+
+        // Verificar que se devuelvan 5 productos por página
+        $this->assertCount(5, $response->json('data'));
+    }
+
+    public function test_index_includes_id()
+    {
+        // Crear algunos productos para probar
+        Product::factory()->count(10)->create();
+
+        // Hacer una solicitud GET a la ruta de índice de productos
+        $response = $this->getJson('/api/products?include_id=1');
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'description',
+                    'price',
+                    'stock',
+                ]
+            ],
+            'links',
+            'meta'
+        ]);
+    }
+
+    public function test_index_includes_timestamps()
+    {
+        // Crear algunos productos para probar
+        Product::factory()->count(10)->create();
+
+        // Hacer una solicitud GET a la ruta de índice de productos
+        $response = $this->getJson('/api/products?include_timestamps=1');
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'name',
+                    'description',
+                    'price',
+                    'stock',
+                    'created_at',
+                ]
+            ],
+            'links',
+            'meta'
+        ]);
+    }
 }
