@@ -15,6 +15,7 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->when($request->has('include_id'), $this->id),
+            'slug' => $this->when($request->has('include_slug'), $this->slug),
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,

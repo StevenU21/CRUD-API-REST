@@ -125,6 +125,30 @@ class ProductTest extends TestCase
         ]);
     }
 
+    public function test_index_includes_slug()
+    {
+        // Crear algunos productos para probar
+        Product::factory()->count(10)->create();
+
+        // Hacer una solicitud GET a la ruta de índice de productos
+        $response = $this->getJson('/api/products?include_slug=1');
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'slug',
+                    'name',
+                    'description',
+                    'price',
+                    'stock',
+                ]
+            ],
+            'links',
+            'meta'
+        ]);
+    }
+
     public function test_index_includes_timestamps()
     {
         // Crear algunos productos para probar
@@ -148,4 +172,6 @@ class ProductTest extends TestCase
             'meta'
         ]);
     }
+
+
 }
