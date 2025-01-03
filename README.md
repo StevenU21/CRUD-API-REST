@@ -88,11 +88,23 @@ La API estará disponible en `http://localhost:8000`.
 
 ## 🔍 Endpoints
 
-- **GET** `/api/` - Listar todos los recursos
-- **POST** `/api/` - Crear un nuevo recurso
-- **GET** `/api/{id}` - Obtener un recurso por ID
-- **PUT/PATCH** `/api{id}` - Actualizar un recurso por ID
-- **DELETE** `/api/{id}` - Eliminar un recurso por ID
+- **GET** `/api/products` - Listar todos los productos con paginación
+  - Parámetros opcionales:
+    - `include_id=true` - Incluir el ID del producto en la respuesta
+    - `include_timestamps=true` - Incluir las marcas de tiempo en la respuesta
+    - `per_page=10` - Número de productos por página (por defecto es 10)
+    - `page=1` - Número de la página a obtener (por defecto es 1)
+  - Ejemplos:
+    - `/api/products?include_id=true&include_timestamps=true`
+    - `/api/products?per_page=20&page=2`
+
+- **POST** `/api/products` - Crear un nuevo producto
+
+- **GET** `/api/products/{product}` - Obtener un producto por ID
+
+- **PUT/PATCH** `/api/products/{product}` - Actualizar un producto por ID
+
+- **DELETE** `/api/products/{product}` - Eliminar un producto por ID
 
 ## ✅ Pruebas
 
