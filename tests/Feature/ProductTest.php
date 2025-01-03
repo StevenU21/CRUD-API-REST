@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Models\Product;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductTest extends TestCase
 {
@@ -200,6 +201,69 @@ class ProductTest extends TestCase
             'description' => $product->description,
             'price' => $product->price,
             'stock' => $product->stock,
+        ]);
+    }
+
+    public function test_store_creates_new_product()
+    {
+        // Simular el almacenamiento de archivos
+        Storage::fake('public');
+
+        // Crear un producto simulado
+        $productData = Product::factory()->make()->toArray();
+
+        // Agregar un archivo de imagen simulado
+        $productData['image'] = UploadedFile::fake()->image('product.jpg');
+
+        // Hacer una solicitud POST a la ruta de almacenamiento de productos
+        $response = $this->postJson('/api/products', $productData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(201);
+
+        // Verificar que el producto se haya almacenado en la base de datos
+        $this->assertDatabaseHas('products', [
+            'name' => $productData['name'],
+            'description' => $productData['description'],
+            'price' => $productData['price'],
+            'stock' => $productData['stock'],
+            'slug' => Str::slug($productData['name'], '-'),
+        ]);
+
+        // Verificar que la imagen se haya almacenado
+        Storage::disk('public')->assertExists('products_images/' . Str::slug($productData['name'], '-') . '-1.png');
+    }
+
+    public function test_store_creates_new_product_without_image()
+    {
+        // Crear un producto simulado sin imagen
+        $productData = Product::factory()->make()->toArray();
+        $productData['image'] = null;
+
+        // Hacer una solicitud POST a la ruta de almacenamiento de productos
+        $response = $this->postJson('/api/products', $productData);
+
+        // Verificar que la respuesta sea exitosa
+        $response->assertStatus(201);
+    }
+
+    public function test_store_returns_validation_error()
+    {
+        // Hacer una solicitud POST a la ruta de almacenamiento de productos con datos inválidos
+        $response = $this->postJson('/api/products', []);
+
+        // Verificar que la respuesta tenga un error de validación
+        $response->assertStatus(422);
+
+        // Verificar que la respuesta tenga la estructura correcta
+        $response->assertJsonStructure([
+            'message',
+            'errors' => [
+                'name',
+                'description',
+                'price',
+                'stock',
+            ]
         ]);
     }
 }
