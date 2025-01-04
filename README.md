@@ -112,6 +112,14 @@ La API estará disponible en `http://localhost:8000`.
 
 - **DELETE** `/api/products/{product}` - Eliminar un producto por ID
 
+- **GET** `/api/products/search` - Buscar productos por término de búsqueda
+  - Parámetros opcionales:
+    - `q` - Término de búsqueda (por defecto es una cadena vacía)
+    - `per_page=10` - Número de productos por página (por defecto es 10)
+  - Ejemplos:
+    - `/api/products/search?q=Test`
+    - `/api/products/search?q=Product&per_page=5`
+
 ## ✅ Pruebas
 
 Ejecuta las pruebas unitarias con PHPUnit:

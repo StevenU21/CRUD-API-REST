@@ -336,4 +336,34 @@ class ProductTest extends TestCase
         // Verificar que la respuesta sea exitosa
         $response->assertStatus(200);
     }
+
+
+    public function test_it_can_search_products()
+    {
+        // Create products
+        Product::factory()->create(['name' => 'Test Product 1', 'description' => 'Description 1']);
+        Product::factory()->create(['name' => 'Another Product', 'description' => 'Description 2']);
+
+        // Hacer una solicitud GET a la ruta de búsqueda de productos
+        $response = $this->getJson('/api/products/search?q=Test');
+
+        // Asegúrese de que la respuesta sea exitosa y contenga los productos correctos
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['name' => 'Test Product 1']);
+    }
+
+    public function test_it_returns_not_found_if_no_products_match_search()
+    {
+        // Create a product
+        Product::factory()->create(['name' => 'Test Product 1', 'description' => 'Description 1']);
+
+        // Hacer una solicitud GET a la ruta de búsqueda de productos
+        $response = $this->getJson('/api/products/search?q=NonExistentProduct');
+
+        // Asegúrese de que la respuesta sea 404 y contenga un mensaje de error
+        $response->assertStatus(404)
+            ->assertJson(['message' => 'Resource does not exist']);
+    }
 }
+

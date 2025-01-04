@@ -9,6 +9,8 @@ use App\Http\Resources\ProductResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
 use App\Services\ImageService;
+use App\Exceptions\NotFoundException;
+
 class ProductController extends Controller
 {
     protected $imageService;
@@ -25,6 +27,20 @@ class ProductController extends Controller
         $perPage = $request->get('per_page', 10);
 
         $products = Product::paginate($perPage);
+
+        return ProductResource::collection($products);
+    }
+    public function search(Request $request): AnonymousResourceCollection
+    {
+        $searchTerm = $request->get('q', '');
+        $perPage = $request->get('per_page', 10);
+
+        $products = Product::where('name', 'LIKE', "%{$searchTerm}%")
+            ->paginate($perPage);
+
+        if ($products->isEmpty()) {
+            throw new NotFoundException();
+        }
 
         return ProductResource::collection($products);
     }
