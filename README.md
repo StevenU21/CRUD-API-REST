@@ -12,7 +12,7 @@ Este proyecto es una implementación sencilla de una API RESTful para operacione
 - **Sin Autenticación**: Acceso libre a los endpoints de la API.
 - **Base de Datos MySQL/SQLite**: Utiliza MySQL o SQLite para la persistencia de datos.
 
-# 📚 Explicación de la Implementación
+## 🫡 Explicación de la Implementación
 
 - **Manejo de Excepciones y Trait Personalizado**
 Para manejar casos en los que no se encuentran registros, se utiliza una excepción personalizada NotFoundException, que se conecta a un trait FindsModelOrFail. Este trait, utilizado en el modelo, proporciona una función findOrFailCustom que lanza la excepción cuando no se encuentra el modelo en la base de datos.
