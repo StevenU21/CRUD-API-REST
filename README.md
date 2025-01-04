@@ -104,6 +104,11 @@ La API estará disponible en `http://localhost:8000`.
 - **GET** `/api/products/{product}` - Obtener un producto por ID
 
 - **PUT/PATCH** `/api/products/{product}` - Actualizar un producto por ID
+  - Nota: Para usar el método PUT o PATCH, debes agregar un campo `_method` con el valor `PUT` o `PATCH` en la petición POST. Esto es necesario cuando se envían datos como `form-data`.
+  - Ejemplo:
+    ```bash
+    curl -X POST -F "_method=PATCH" -F "name=New Product Name" -F "price=99.99" http://your-api-url/api/products/{product}
+    ```
 
 - **DELETE** `/api/products/{product}` - Eliminar un producto por ID
 
