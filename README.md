@@ -16,11 +16,14 @@ Este proyecto es una implementación sencilla de una API RESTful para operacione
 
 ```
 ├── app
+|   ├── Exceptions
 │   ├── Http
 │   │   ├── Controllers
 │   │   |── Requests
 |   |   |── Resources
 │   ├── Models
+|   ├── Services
+|   ├── Traits
 │   └── ...
 ├── config
 ├── database
