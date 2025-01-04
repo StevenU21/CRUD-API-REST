@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NotFoundException;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-
+use App\Services\ImageService;
 class ProductController extends Controller
 {
+    protected $imageService;
+
+    public function __construct(ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -28,8 +33,10 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product): ProductResource
+    public function show($id): ProductResource
     {
+        $product = Product::findOrFailCustom($id);
+
         return new ProductResource($product);
     }
 
@@ -41,9 +48,7 @@ class ProductController extends Controller
         $product = Product::create($request->validated());
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $imageName = Str::slug($request->name, '-') . '-' . $product->id . '.' . 'png';
-            $path = $file->storeAs('products_images', $imageName, 'public');
+            $path = $this->imageService->storeImage($request->file('image'), $request->name, $product->id);
             $product->update(['image' => $path]);
         }
 
@@ -55,19 +60,17 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, $id): ProductResource
     {
-        $product = Product::findOrFail($id);
+        $product = Product::findOrFailCustom($id);
 
         $product->fill($request->validated());
         $product->save();
 
         if ($request->hasFile('image')) {
             if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+                $this->imageService->deleteImage($product->image);
             }
 
-            $file = $request->file('image');
-            $imageName = Str::slug($request->name, '-') . '-' . $product->id . '.' . 'png';
-            $path = $file->storeAs('products_images', $imageName, 'public');
+            $path = $this->imageService->storeImage($request->file('image'), $request->name, $product->id);
             $product->update(['image' => $path]);
         }
 
@@ -79,10 +82,10 @@ class ProductController extends Controller
      */
     public function destroy(int $id): ProductResource
     {
-        $product = Product::findOrFail($id);
+        $product = Product::findOrFailCustom($id);
 
         if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+            $this->imageService->deleteImage($product->image);
         }
 
         $product->delete();

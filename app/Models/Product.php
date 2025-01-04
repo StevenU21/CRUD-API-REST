@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\FindsModelOrFail;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, FindsModelOrFail;
 
     /**
      *  Los atributos que son asignables en masa.
