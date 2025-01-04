@@ -12,6 +12,6 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/', [ProductController::class, 'index'])->name('index');
     Route::get('/{product}', [ProductController::class, 'show'])->name('show');
     Route::post('/', [ProductController::class, 'store'])->name('store');
-    Route::patch('/{id}', [ProductController::class, 'update'])->name('update');
+    Route::patch('/{product}', [ProductController::class, 'update'])->name('update');
     Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy');
 });
