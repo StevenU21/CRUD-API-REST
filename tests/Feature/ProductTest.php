@@ -365,5 +365,46 @@ class ProductTest extends TestCase
         $response->assertStatus(404)
             ->assertJson(['message' => 'Resource does not exist']);
     }
+
+    public function test_it_can_autocomplete_products()
+    {
+        // Create products
+        Product::factory()->create(['name' => 'Test Product 1']);
+        Product::factory()->create(['name' => 'Test Product 2']);
+        Product::factory()->create(['name' => 'Another Product']);
+
+        // Hacer una solicitud GET a la ruta de autocompletar productos
+        $response = $this->getJson('/api/products/autocomplete?q=Test');
+
+        // Asegúrese de que la respuesta sea exitosa y contenga los productos correctos
+        $response->assertStatus(200)
+            ->assertJsonCount(2)
+            ->assertJsonFragment(['name' => 'Test Product 1'])
+            ->assertJsonFragment(['name' => 'Test Product 2']);
+    }
+    public function test_it_can_delete_a_product()
+    {
+        // Arrange
+        $product = Product::factory()->create(['image' => 'path/to/image.jpg']);
+
+        // Act
+        $response = $this->deleteJson("/api/products/{$product->id}");
+
+        // Assert
+        $response->assertStatus(200)
+            ->assertJsonFragment(['message' => 'Product deleted successfully']);
+
+        $this->assertDatabaseMissing('products', ['id' => $product->id]);
+    }
+
+    public function test_it_returns_not_found_when_deleting_non_existent_product()
+    {
+        // Act
+        $response = $this->deleteJson('/api/products/999');
+
+        // Assert
+        $response->assertStatus(404)
+            ->assertJson(['message' => 'Resource does not exist']);
+    }
 }
 

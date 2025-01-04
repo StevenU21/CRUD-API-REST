@@ -120,6 +120,11 @@ La API estará disponible en `http://localhost:8000`.
     - `/api/products/search?q=Test`
     - `/api/products/search?q=Product&per_page=5`
 
+- **GET** `/api/products/autocomplete` - Autocompletar productos por término de búsqueda
+  - Parámetros opcionales:
+    - `q` - Término de búsqueda (por defecto es una cadena vacía)
+  - Ejemplos:
+    - `/api/products/autocomplete?q=Test`
 ## ✅ Pruebas
 
 Ejecuta las pruebas unitarias con PHPUnit:

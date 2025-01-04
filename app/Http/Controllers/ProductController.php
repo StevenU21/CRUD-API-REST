@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
 use App\Services\ImageService;
@@ -45,6 +46,21 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
+    public function autocomplete(Request $request): JsonResponse
+    {
+        $searchTerm = $request->get('q', '');
+
+        $products = Product::where('name', 'LIKE', "%{$searchTerm}%")
+            ->limit(5)
+            ->get(['id', 'name']);
+
+        if ($products->isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        return response()->json($products);
+    }
+
     /**
      * Display the specified resource.
      */
@@ -58,7 +74,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request): ProductResource
+    public function store(StoreProductRequest $request): JsonResponse
     {
         $product = Product::create($request->validated());
 
@@ -67,13 +83,16 @@ class ProductController extends Controller
             $product->update(['image' => $path]);
         }
 
-        return new ProductResource($product);
+        return response()->json([
+            'message' => 'Product created successfully',
+            'data' => new ProductResource($product)
+        ], 201);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, $id): ProductResource
+    public function update(UpdateProductRequest $request, $id): JsonResponse
     {
         $product = Product::findOrFailCustom($id);
 
@@ -89,13 +108,16 @@ class ProductController extends Controller
             $product->update(['image' => $path]);
         }
 
-        return new ProductResource($product);
+        return response()->json([
+            'message' => 'Product updated successfully',
+            'data' => new ProductResource($product)
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id): ProductResource
+    public function destroy(int $id): JsonResponse
     {
         $product = Product::findOrFailCustom($id);
 
@@ -105,6 +127,6 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return new ProductResource($product);
+        return response()->json(['message' => 'Product deleted successfully'], 200);
     }
 }
