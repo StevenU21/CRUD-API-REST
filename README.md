@@ -14,27 +14,28 @@ Este proyecto es una implementación sencilla de una API RESTful para operacione
 
 ## 📂 Estructura del Proyecto
 
-```
+```plaintext
+
 ├── app
-|   ├── Exceptions
-│   ├── Http
-│   │   ├── Controllers
-│   │   |── Requests
-|   |   |── Resources
-│   ├── Models
-|   ├── Services
-|   ├── Traits
+│   ├── Exceptions          # Manejo de excepciones personalizadas
+│   ├── Http                # Componentes relacionados con HTTP
+│   │   ├── Controllers     # Controladores de la API
+│   │   ├── Requests        # Validaciones de solicitudes
+│   │   ├── Resources       # Transformadores de datos (formato JSON)
+│   ├── Models              # Modelos Eloquent para la base de datos
+│   ├── Services            # Lógica de negocio independiente de los controladores
+│   ├── Traits              # Reutilización de código a través de Traits
 │   └── ...
-├── config
-├── database
-│   ├── factories
-│   ├── migrations
-│   └── seeders
+├── config                  # Archivos de configuración del proyecto
+├── database                # Configuración de la base de datos
+│   ├── factories           # Generadores de datos para pruebas
+│   ├── migrations          # Esquema y estructura de la base de datos
+│   └── seeders             # Población inicial de datos en tablas
 ├── routes
-│   └── api.php
-├── tests
-│   ├── Feature
-│   └── Unit
+│   └── api.php             # Rutas específicas para la API
+├── tests                   # Pruebas automatizadas
+│   ├── Feature             # Pruebas de alto nivel (endpoints y casos de uso)
+│   └── Unit                # Pruebas unitarias para funciones específicas
 └── ...
 ```
 
