@@ -1,4 +1,4 @@
-# 📚 Proyecto API CRUD en Laravel
+# 📚 API CRUD en Laravel
 
 ## 🚀 Descripción
 
@@ -11,6 +11,20 @@ Este proyecto es una implementación sencilla de una API RESTful para operacione
 - **Pruebas Unitarias**: Pruebas unitarias para asegurar la fiabilidad de la API.
 - **Sin Autenticación**: Acceso libre a los endpoints de la API.
 - **Base de Datos MySQL/SQLite**: Utiliza MySQL o SQLite para la persistencia de datos.
+
+## 🫡 Explicación de la Implementación
+
+- **Manejo de Excepciones y Trait Personalizado**
+Para manejar casos en los que no se encuentran registros, se utiliza una excepción personalizada NotFoundException, que se conecta a un trait FindsModelOrFail. Este trait, utilizado en el modelo, proporciona una función findOrFailCustom que lanza la excepción cuando no se encuentra el modelo en la base de datos.
+
+- **Lógica de Manejo de Imágenes**
+La clase ImageService se encarga de manejar la lógica relacionada con las imágenes. Tiene dos métodos principales:
+
+- **storeImage**: Almacena una imagen en el directorio products_images y la asocia con el producto.
+- **deleteImage**: Elimina la imagen asociada a un producto del almacenamiento público.
+- **Validaciones Personalizadas**
+El StoreProductRequest se utiliza para validar los datos cuando se crea o actualiza un producto. Incluye reglas de validación para los campos como name, description, price, stock, e image, asegurando que cumplan con los requisitos establecidos antes de ser procesados.
+
 
 ## 📂 Estructura del Proyecto
 
@@ -111,7 +125,7 @@ La API estará disponible en `http://localhost:8000`.
   - Nota: Para usar el método PUT o PATCH, debes agregar un campo `_method` con el valor `PUT` o `PATCH` en la petición POST. Esto es necesario cuando se envían datos como `form-data`.
   - Ejemplo:
     ```bash
-    curl -X POST -F "_method=PATCH" -F "name=New Product Name" -F "price=99.99" http://your-api-url/api/products/{product}
+    curl -X POST -F "_method=PATCH" -F "name=New Product Name" -F "price=99.99" http://localhost:8000/api/products/{product}
     ```
 
 - **DELETE** `/api/products/{product}` - Eliminar un producto por ID
