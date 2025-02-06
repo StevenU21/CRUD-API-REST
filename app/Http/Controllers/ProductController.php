@@ -25,16 +25,16 @@ class ProductController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 5);
 
-        $products = Product::paginate($perPage);
+        $products = Product::latest()->paginate($perPage);
 
         return ProductResource::collection($products);
     }
     public function search(Request $request): AnonymousResourceCollection
     {
         $searchTerm = $request->get('q', '');
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 5);
 
         $products = Product::where('name', 'LIKE', "%{$searchTerm}%")
             ->paginate($perPage);

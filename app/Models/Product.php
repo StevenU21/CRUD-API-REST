@@ -34,12 +34,8 @@ class Product extends Model
     /**
      *  Obtiene la URL de la imagen del producto.
      */
-    public function image(): string
+    public function getImageUrlAttribute(): string
     {
-        if ($this->image) {
-            return asset('storage/products_images/' . $this->image);
-        } else {
-            return 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwm0rdbOAslibv0mLIxWKZ6C6r9m8fujTIBA&s';
-        }
+        return asset('storage/' . $this->image);
     }
 }

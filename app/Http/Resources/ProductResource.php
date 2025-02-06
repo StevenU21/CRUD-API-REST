@@ -19,7 +19,7 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'stock' => $this->stock,
-            'image' => $this->image(),
+            'image' => $this->image_url,
             'created_at' => $this->when($request->has('include_timestamps'), $this->created_at->format($request->get('date_format', 'Y-m-d H:i:s')) ),
         ];
     }
